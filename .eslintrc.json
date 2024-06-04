@@ -1,0 +1,55 @@
+{
+  "extends": [
+    "expo",
+    "prettier",
+    "plugin:@typescript-eslint/recommended",
+    "plugin:react/recommended",
+    "plugin:jsx-a11y/recommended",
+    "plugin:prettier/recommended",
+    "plugin:testing-library/react",
+    "plugin:import/recommended",
+    "plugin:import/typescript"
+  ],
+  "ignorePatterns": ["build", "dist", "android", "ios", "node_modules"],
+  "parser": "@typescript-eslint/parser",
+  "parserOptions": {
+    "ecmaFeatures": {
+      "jsx": true,
+      "modules": true
+    },
+    "ecmaVersion": 2021,
+    "project": "./tsconfig.json",
+    "sourceType": "module"
+  },
+  "plugins": [
+    "@typescript-eslint",
+    "import",
+    "jsx-a11y",
+    "prettier",
+    "react",
+    "react-hooks",
+    "testing-library"
+  ],
+  "rules": {
+    "complexity": "warn",
+    "indent": [2, 2, { "SwitchCase": 1 }],
+    "max-lines": "warn",
+    "no-multi-spaces": "error",
+    "no-multiple-empty-lines": "error",
+    "no-var": "error",
+    "prefer-const": "error",
+    "prettier/prettier": "warn",
+    "react/jsx-uses-react": "off",
+    "react/react-in-jsx-scope": "off",
+    "semi": "error",
+    "space-in-parens": "error",
+    "@typescript-eslint/no-unused-vars": [
+      "warn",
+      {
+        "argsIgnorePattern": "_",
+        "varsIgnorePattern": "_",
+        "caughtErrorsIgnorePattern": "_"
+      }
+    ]
+  }
+}

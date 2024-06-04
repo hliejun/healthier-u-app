@@ -1,0 +1,52 @@
+# Learn more https://docs.github.com/en/get-started/getting-started-with-git/ignoring-files
+
+# Dependencies
+node_modules
+
+# Expo
+.expo
+dist
+build
+web-build
+
+# Native
+*.orig.*
+*.jks
+*.p8
+*.p12
+*.key
+*.mobileprovision
+
+# Metro
+.metro-health-check*
+
+# Debug
+npm-debug.*
+yarn-debug.*
+yarn-error.*
+
+# MacOS
+.DS_Store
+*.pem
+
+# Env files
+.env
+env-variables.yaml
+secrets
+
+# Typescript
+*.tsbuildinfo
+
+# API docs
+bruno
+
+# Test coverage
+coverage
+
+# jenv
+.java-version
+
+# Other
+appengine-generated
+tmp
+**/*.bak
