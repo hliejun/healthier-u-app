@@ -22,6 +22,7 @@ export type RootStackParamList = {
     string,
     {
       mode: 'MEAL' | 'GROCERIES' | 'NUTRITION';
+      title: 'Meal Log' | 'Groceries Log' | 'Nutrition Log';
     }
   >;
 };
@@ -49,7 +50,19 @@ export const App = () => {
             <Stack.Screen name="Onboarding" component={Onboarding} />
             <Stack.Screen name="VirtualPetFull" component={VirtualPetFull} />
             <Stack.Screen name="Missions" component={Missions} />
-            <Stack.Screen name="Logger" component={Logger} />
+            <Stack.Screen
+              name="Logger"
+              component={Logger}
+              options={({ route }) => ({
+                title: route.params.title as unknown as string,
+                headerStyle: {
+                  shadowOpacity: 0,
+                  backgroundColor: '#FFFFFF',
+                  borderWidth: 0,
+                  elevation: 0,
+                },
+              })}
+            />
           </Stack.Navigator>
         </NavigationContainer>
       </RewardsContext.Provider>
