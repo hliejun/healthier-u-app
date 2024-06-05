@@ -13,7 +13,20 @@ import { Missions } from './src/screens/Missions/Missions';
 import { Onboarding } from './src/screens/Onboarding';
 import { VirtualPetFull } from './src/screens/VirtualPetFull/VirtualPetFull';
 
-const Stack = createStackNavigator();
+export type RootStackParamList = {
+  HomeTabs: Record<string, never>;
+  Onboarding: Record<string, never>;
+  VirtualPetFull: Record<string, never>;
+  Missions: Record<string, never>;
+  Logger: Record<
+    string,
+    {
+      mode: 'MEAL' | 'GROCERIES' | 'NUTRITION';
+    }
+  >;
+};
+
+const Stack = createStackNavigator<RootStackParamList>();
 
 export const App = () => {
   const [_fontsLoaded, _fontError] = useFonts({

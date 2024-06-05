@@ -67,7 +67,7 @@ const MOCK_ANNOUNCEMENTS = [
     title: 'All about your new virtual pet!',
     desc: 'A friendly companion to journey with you in your quest for a healthier you!',
     action: 'Find out more',
-    screen: '',
+    screen: 'VirtualPetFull',
   },
   {
     uuid: 'MOCK_ANN_2',

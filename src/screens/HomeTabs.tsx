@@ -8,6 +8,13 @@ import { Home } from './Home';
 import { Profile } from './Profile';
 import { Rewards } from './Rewards';
 
+export type RootTabParamList = {
+  Home: Record<string, never>;
+  Explore: Record<string, never>;
+  Rewards: Record<string, never>;
+  Profile: Record<string, never>;
+};
+
 const DISABLED_TAB = {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   tabPress: (e: any) => {
@@ -16,7 +23,7 @@ const DISABLED_TAB = {
   },
 };
 
-const Tab = createBottomTabNavigator();
+const Tab = createBottomTabNavigator<RootTabParamList>();
 
 export const HomeTabs = () => (
   <Tab.Navigator
