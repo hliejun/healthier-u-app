@@ -41,17 +41,20 @@ export const QuickLinks = () => {
       <LinkItem
         iconName="fast-food-outline"
         label="Log My Meals"
-        screen="" // "MealLog"
+        screen="Logger"
+        screenParams={{ type: 'MEAL' }}
       />
       <LinkItem
         iconName="cart-outline"
         label="Log Groceries"
-        screen="" // "GroceriesLog"
+        screen="Logger"
+        screenParams={{ type: 'GROCERIES' }}
       />
       <LinkItem
         iconName="document-text-outline"
         label="Log Nutrition"
-        screen="" // "NutritionLog"
+        screen="Logger"
+        screenParams={{ type: 'NUTRITION' }}
       />
     </View>
   );
