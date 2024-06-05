@@ -21,14 +21,33 @@ export const AnnouncementItem: FC<AnnouncementItemProps> = ({
 }) => {
   return (
     <View style={styles.pagerItem}>
-      {!!image && <Image src={image} />}
-      <View>
+      {!!image && <Image src={image} style={styles.pagerImage} />}
+      <View style={styles.pagerContent}>
         <View>
-          <Text>{title}</Text>
-          <Text>{desc}</Text>
+          <Text
+            style={{
+              textAlign: 'left',
+              fontSize: 16,
+              fontFamily: 'Inter-SemiBold',
+            }}
+          >
+            {title}
+          </Text>
+          <Text
+            style={{
+              textAlign: 'left',
+              fontSize: 10,
+              fontFamily: 'Inter-SemiBold',
+            }}
+          >
+            {desc}
+          </Text>
         </View>
         {!!action && !!screen && (
-          <Link to={{ screen: screen as never, params: screenParams as never }}>
+          <Link
+            to={{ screen: screen as never, params: screenParams as never }}
+            style={styles.pagerLink}
+          >
             {action}
           </Link>
         )}
@@ -73,16 +92,47 @@ const styles = StyleSheet.create({
     // ...
   },
   pagerContainer: {
-    height: 100,
+    minHeight: 150,
     width: '100%',
   },
   pagerItem: {
     display: 'flex',
     maxWidth: '100%',
-    height: 100,
+    height: 120,
     justifyContent: 'center',
     alignItems: 'center',
     margin: 16,
+    flexDirection: 'row',
+    backgroundColor: '#FFFFFF',
+    borderRadius: 4,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.23,
+    shadowRadius: 2.62,
+    elevation: 4,
+    borderStyle: 'solid',
+    borderColor: '#75B5F5',
+    borderWidth: 2,
+  },
+  pagerImage: {
+    flex: 1,
+    backgroundColor: '#75B5F5',
+    height: '100%',
+    borderTopLeftRadius: 4,
+    borderBottomLeftRadius: 4,
+  },
+  pagerContent: {
+    flex: 2,
+    backgroundColor: '#FFFFFF',
+    height: '100%',
+    justifyContent: 'center',
+    padding: 10,
+  },
+  pagerLink: {
+    textAlign: 'right',
+    fontSize: 10,
+    fontFamily: 'Inter-SemiBold',
+    color: '#4995e1',
   },
 });
 
