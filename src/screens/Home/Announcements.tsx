@@ -3,7 +3,7 @@ import React, { FC, JSXElementConstructor } from 'react';
 import { Image, StyleSheet, Text, View } from 'react-native';
 import PagerView from 'react-native-pager-view';
 
-import Pawprint from '../../../assets/images/Pawprint.svg';
+import OttieFish from '../../../assets/images/OttieFish.svg';
 import Standing from '../../../assets/images/Standing.svg';
 import { shadows } from '../../styles/shadows';
 
@@ -29,7 +29,9 @@ export const AnnouncementItem: FC<AnnouncementItemProps> = ({
       {typeof PageImage === 'string'
         ? !!PageImage && <Image src={PageImage} style={styles.pagerImage} />
         : !!PageImage && (
-            <PageImage style={styles.pagerImage} height={120} width={120} />
+            <View style={styles.pagerImage}>
+              <PageImage height={100} width={100} />
+            </View>
           )}
       <View style={styles.pagerContent}>
         <View>
@@ -63,7 +65,7 @@ export const AnnouncementItem: FC<AnnouncementItemProps> = ({
 const MOCK_ANNOUNCEMENTS = [
   {
     uuid: 'MOCK_ANN_1',
-    image: Pawprint,
+    image: OttieFish,
     title: 'All about your new virtual pet!',
     desc: 'A friendly companion to journey with you in your quest for a healthier you!',
     action: 'Find out more',
@@ -82,7 +84,7 @@ const MOCK_ANNOUNCEMENTS = [
 export const Announcements = () => {
   return (
     <View style={styles.container}>
-      <PagerView style={styles.pagerContainer} initialPage={0}>
+      <PagerView style={styles.pagerContainer} initialPage={0} useNext={false}>
         {MOCK_ANNOUNCEMENTS.map((annProps) => (
           <AnnouncementItem {...annProps} key={annProps.uuid} />
         ))}
@@ -124,6 +126,8 @@ const styles = StyleSheet.create({
     width: 120,
     borderTopLeftRadius: 4,
     borderBottomLeftRadius: 4,
+    justifyContent: 'center',
+    alignItems: 'center',
   },
   pagerContent: {
     flex: 2,
