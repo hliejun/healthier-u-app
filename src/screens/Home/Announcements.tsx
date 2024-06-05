@@ -5,6 +5,7 @@ import PagerView from 'react-native-pager-view';
 
 import Pawprint from '../../../assets/images/Pawprint.svg';
 import Standing from '../../../assets/images/Standing.svg';
+import { shadows } from '../../styles/shadows';
 
 export interface AnnouncementItemProps {
   image?: string | JSXElementConstructor<Record<string, unknown>>;
@@ -95,7 +96,8 @@ const styles = StyleSheet.create({
     // ...
   },
   pagerContainer: {
-    minHeight: 150,
+    display: 'flex',
+    minHeight: 138,
     width: '100%',
   },
   pagerItem: {
@@ -104,19 +106,16 @@ const styles = StyleSheet.create({
     height: 120,
     justifyContent: 'center',
     alignItems: 'center',
-    margin: 16,
+    marginTop: 16,
+    marginHorizontal: 16,
     flexDirection: 'row',
     backgroundColor: '#FFFFFF',
     borderRadius: 4,
-    shadowColor: '#000',
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.23,
-    shadowRadius: 2.62,
-    elevation: 4,
     borderStyle: 'solid',
     borderColor: '#75B5F5',
     borderWidth: 2,
     overflow: 'hidden',
+    ...shadows.card,
   },
   pagerImage: {
     flex: 1,
