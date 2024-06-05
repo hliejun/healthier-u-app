@@ -139,6 +139,7 @@ const styles = StyleSheet.create({
     fontFamily: 'Inter-SemiBold',
     color: '#4995e1',
     marginTop: 8,
+    marginLeft: 'auto',
   },
   pagerTitle: {
     textAlign: 'left',
