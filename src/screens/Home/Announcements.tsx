@@ -1,18 +1,22 @@
 import { Link } from '@react-navigation/native';
-import React, { FC } from 'react';
+import React, { FC, JSXElementConstructor } from 'react';
 import { Image, StyleSheet, Text, View } from 'react-native';
 import PagerView from 'react-native-pager-view';
 
+import Pawprint from '../../../assets/images/Pawprint.svg';
+import Standing from '../../../assets/images/Standing.svg';
+
 export interface AnnouncementItemProps {
-  image?: string;
+  image?: string | JSXElementConstructor<Record<string, unknown>>;
   title: string;
   desc: string;
   action?: string;
   screen?: string;
   screenParams?: Record<string, unknown>;
 }
+
 export const AnnouncementItem: FC<AnnouncementItemProps> = ({
-  image,
+  image: PageImage,
   title,
   desc,
   action,
@@ -21,31 +25,30 @@ export const AnnouncementItem: FC<AnnouncementItemProps> = ({
 }) => {
   return (
     <View style={styles.pagerItem}>
-      {!!image && <Image src={image} style={styles.pagerImage} />}
+      {typeof PageImage === 'string'
+        ? !!PageImage && <Image src={PageImage} style={styles.pagerImage} />
+        : !!PageImage && (
+            <PageImage style={styles.pagerImage} height={120} width={120} />
+          )}
       <View style={styles.pagerContent}>
         <View>
           <Text
-            style={{
-              textAlign: 'left',
-              fontSize: 16,
-              fontFamily: 'Inter-SemiBold',
-            }}
+            style={styles.pagerTitle}
+            numberOfLines={1}
+            ellipsizeMode="tail"
           >
             {title}
           </Text>
-          <Text
-            style={{
-              textAlign: 'left',
-              fontSize: 10,
-              fontFamily: 'Inter-SemiBold',
-            }}
-          >
+          <Text style={styles.pagerDesc} numberOfLines={2} ellipsizeMode="tail">
             {desc}
           </Text>
         </View>
-        {!!action && !!screen && (
+        {!!action && (
           <Link
-            to={{ screen: screen as never, params: screenParams as never }}
+            to={{
+              screen: (screen || 'Home') as never,
+              params: screenParams as never,
+            }}
             style={styles.pagerLink}
           >
             {action}
@@ -59,19 +62,19 @@ export const AnnouncementItem: FC<AnnouncementItemProps> = ({
 const MOCK_ANNOUNCEMENTS = [
   {
     uuid: 'MOCK_ANN_1',
-    image: '',
+    image: Pawprint,
     title: 'All about your new virtual pet!',
     desc: 'A friendly companion to journey with you in your quest for a healthier you!',
     action: 'Find out more',
-    screen: 'A',
+    screen: '',
   },
   {
     uuid: 'MOCK_ANN_2',
-    image: '',
+    image: Standing,
     title: 'We want to know you better!',
     desc: 'Share your thoughts about healthier habits through a short questionnaire',
     action: 'Complete now',
-    screen: 'B',
+    screen: '',
   },
 ];
 
@@ -113,11 +116,13 @@ const styles = StyleSheet.create({
     borderStyle: 'solid',
     borderColor: '#75B5F5',
     borderWidth: 2,
+    overflow: 'hidden',
   },
   pagerImage: {
     flex: 1,
     backgroundColor: '#75B5F5',
-    height: '100%',
+    height: 120,
+    width: 120,
     borderTopLeftRadius: 4,
     borderBottomLeftRadius: 4,
   },
@@ -126,13 +131,26 @@ const styles = StyleSheet.create({
     backgroundColor: '#FFFFFF',
     height: '100%',
     justifyContent: 'center',
-    padding: 10,
+    padding: 16,
+    borderRadius: 4,
   },
   pagerLink: {
     textAlign: 'right',
-    fontSize: 10,
+    fontSize: 14,
     fontFamily: 'Inter-SemiBold',
     color: '#4995e1',
+    marginTop: 8,
+  },
+  pagerTitle: {
+    textAlign: 'left',
+    fontSize: 16,
+    fontFamily: 'Inter-SemiBold',
+    marginBottom: 8,
+  },
+  pagerDesc: {
+    textAlign: 'left',
+    fontSize: 14,
+    fontFamily: 'Inter-Regular',
   },
 });
 

@@ -32,7 +32,6 @@
   ],
   "rules": {
     "complexity": "warn",
-    "indent": [2, 2, { "SwitchCase": 1 }],
     "max-lines": "warn",
     "no-multi-spaces": "error",
     "no-multiple-empty-lines": "error",
