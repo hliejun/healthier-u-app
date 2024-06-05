@@ -5,6 +5,7 @@ export enum Precondition {
   HIGH_CHOLESTEROL = 'HIGH_CHOLESTEROL',
   DIABETES = 'DIABETES',
 }
+
 export const DEFAULT_USER = {
   name: 'Jun Jie',
   age: 28,
