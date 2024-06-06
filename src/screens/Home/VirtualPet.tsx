@@ -40,7 +40,7 @@ const VirtualPet = () => {
           onPress={navigateToFullScreen}
         >
           <Image
-            source={require('../../../assets/images/background.png')}
+            source={require('../../../assets/images/livingroomfinal.png')}
             style={styles.petImage}
           />
         </TouchableWithoutFeedback>

@@ -1,7 +1,7 @@
 import { Ionicons } from '@expo/vector-icons';
 import LottieView from 'lottie-react-native';
 import React from 'react';
-import { StyleSheet, Text, View } from 'react-native';
+import { Image, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 
 export const VirtualPetFull = () => {
   return (
@@ -79,13 +79,49 @@ export const VirtualPetFull = () => {
           </View>
         </View>
       </View>
-      <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
-        <LottieView
-          source={require('../../../assets/lottie/ottie/walk.json')}
-          style={{ width: '100%', height: '50%' }}
-          autoPlay
-          loop
-        />
+
+      <View style={styles.header}>
+        <Text style={styles.updateText}>Updated today, 11.30 AM </Text>
+        <TouchableOpacity style={styles.syncButton}>
+          <Text style={styles.syncText}>Sync now</Text>
+        </TouchableOpacity>
+      </View>
+
+      <View style={styles.lottieContainer}>
+        <View style={styles.lottiePet}>
+          <LottieView
+            source={require('../../../assets/lottie/ottie/hungry otty.json')}
+            style={styles.otterImage}
+            autoPlay
+            loop
+          />
+          <Image
+            source={require('../../../assets/images/livingroomfinal.png')}
+            style={styles.backgroundImage}
+          />
+        </View>
+
+        <View style={styles.otterContainer}>
+          <Text style={styles.otterName}>Otty</Text>
+          <TouchableOpacity style={styles.settingsIcon}>
+            <Ionicons name="settings-outline" size={24} color="#000" />
+          </TouchableOpacity>
+        </View>
+
+        <View style={styles.menuContainer}>
+          <View style={styles.menuItem}>
+            <Ionicons name="book-outline" size={24} color="#9A4AFF" />
+            <Text style={styles.menuText}>Quests</Text>
+          </View>
+          <View style={styles.menuItem}>
+            <Ionicons name="shirt-outline" size={24} color="#9A4AFF" />
+            <Text style={styles.menuText}>Items</Text>
+          </View>
+          <View style={styles.menuItem}>
+            <Ionicons name="stats-chart-outline" size={24} color="#9A4AFF" />
+            <Text style={styles.menuText}>Recap</Text>
+          </View>
+        </View>
       </View>
     </>
   );
@@ -247,14 +283,76 @@ const styles = StyleSheet.create({
   },
   lottieContainer: {
     flex: 1,
+    backgroundColor: '#FFFFFF',
+  },
+  lottiePet: {
+    flex: 1,
+  },
+  otterContainer: {
+    alignItems: 'center',
+  },
+  header: {
+    flexDirection: 'row',
+    justifyContent: 'flex-end',
+    alignItems: 'center',
+    padding: 16,
+    top: -15,
+    backgroundColor: '#F8F8F8',
+    borderBottomWidth: 1,
+    borderBottomColor: '#E0E0E0',
+  },
+  updateText: {
+    fontSize: 12,
+    color: '#333333',
+  },
+  syncButton: {
+    paddingVertical: 4,
+    paddingHorizontal: 8,
+    backgroundColor: '#007AFF',
+    borderRadius: 4,
+  },
+  syncText: {
+    fontSize: 14,
+    color: '#FFFFFF',
+  },
+  backgroundImage: {
+    position: 'absolute',
+    width: '100%',
+    height: '100%',
+    top: -8,
+  },
+  otterImage: {
+    width: '100%',
+    height: '70%',
     zIndex: 99,
+    marginTop: 70,
+  },
+  otterName: {
+    fontSize: 24,
+    color: '#000',
+    top: -6,
+  },
+  settingsIcon: {
+    position: 'absolute',
+    right: 16,
+  },
+  menuContainer: {
+    flexDirection: 'row',
+    justifyContent: 'space-around',
+    alignItems: 'center',
+    paddingVertical: 16,
+    backgroundColor: '#F8F8F8',
+    borderTopWidth: 1,
+    borderTopColor: '#E0E0E0',
+  },
+  menuItem: {
     justifyContent: 'center',
     alignItems: 'center',
   },
-  lottiePet: {
-    width: 200,
-    height: 150,
-    marginTop: 250,
+  menuText: {
+    fontSize: 14,
+    color: '#333333',
+    marginTop: 4,
   },
 });
 
