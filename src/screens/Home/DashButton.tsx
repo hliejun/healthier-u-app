@@ -50,8 +50,8 @@ export const DashButton: FC<DashButtonProps> = ({
 
 const styles = StyleSheet.create({
   dashButton: {
-    width: '30%',
-    padding: 16,
+    width: '33%',
+    padding: 8,
   },
   dashContent: {
     flexDirection: 'column',

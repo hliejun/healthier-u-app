@@ -1,8 +1,8 @@
 import { createContext } from 'react';
 
 export const DEFAULT_REWARDS = {
-  healthPoints: 0,
-  rewards: 0,
+  healthPoints: 750,
+  rewards: 5,
 };
 
 export const RewardsContext = createContext(DEFAULT_REWARDS);
