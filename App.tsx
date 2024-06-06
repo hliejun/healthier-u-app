@@ -40,7 +40,7 @@ export const App = () => {
     <UserContext.Provider value={DEFAULT_USER}>
       <RewardsContext.Provider value={DEFAULT_REWARDS}>
         <NavigationContainer>
-          <StatusBar />
+          <StatusBar style="light" />
           <Stack.Navigator>
             <Stack.Screen
               name="HomeTabs"
@@ -48,16 +48,31 @@ export const App = () => {
               options={{ headerShown: false }}
             />
             <Stack.Screen name="Onboarding" component={Onboarding} />
-            <Stack.Screen name="VirtualPetFull" component={VirtualPetFull} />
+            <Stack.Screen
+              name="VirtualPetFull"
+              component={VirtualPetFull}
+              options={{
+                title: 'Virtual Pet: Otty',
+                headerBackTitle: ' ',
+                headerTitleStyle: {
+                  fontFamily: 'Inter-SemiBold',
+                },
+              }}
+            />
             <Stack.Screen name="Missions" component={Missions} />
             <Stack.Screen
               name="Logger"
               component={Logger}
               options={({ route }) => ({
                 title: route.params.title as unknown as string,
+                headerBackTitle: ' ',
+                headerTitleStyle: {
+                  fontFamily: 'Inter-SemiBold',
+                },
+                headerTintColor: '#FFFFFF',
                 headerStyle: {
                   shadowOpacity: 0,
-                  backgroundColor: '#FFFFFF',
+                  backgroundColor: '#1F1F1F',
                   borderWidth: 0,
                   elevation: 0,
                 },

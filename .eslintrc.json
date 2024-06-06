@@ -32,7 +32,7 @@
   ],
   "rules": {
     "complexity": "warn",
-    "max-lines": "warn",
+    "max-lines": ["warn", { "skipBlankLines": true }],
     "no-multi-spaces": "error",
     "no-multiple-empty-lines": "error",
     "no-var": "error",

@@ -137,7 +137,7 @@ const styles = StyleSheet.create({
   },
   lastSectionContainer: {
     marginTop: 24,
-    marginBottom: 48,
+    marginBottom: 24,
   },
   sectionLabel: {
     fontSize: 12,
