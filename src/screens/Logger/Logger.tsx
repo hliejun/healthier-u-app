@@ -1,4 +1,10 @@
-import { RouteProp, useRoute } from '@react-navigation/native';
+import {
+  NavigationProp,
+  RouteProp,
+  useNavigation,
+  useRoute,
+} from '@react-navigation/native';
+import { BlurView } from 'expo-blur';
 import {
   CameraCapturedPicture,
   CameraType,
@@ -7,9 +13,16 @@ import {
 } from 'expo-camera';
 import LottieView, { AnimationObject } from 'lottie-react-native';
 import { FC, useCallback, useRef, useState } from 'react';
-import { Image, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
+import { Image, Text, TouchableOpacity, View } from 'react-native';
 
 import { RootStackParamList } from '../../../App';
+import {
+  discoverGroceries,
+  discoverMeal,
+  discoverNutrition,
+} from '../../services/discover';
+import { useDebounce } from '../../utils/useDebounce';
+import { styles } from './styles';
 
 // ROW TEXT
 
@@ -69,6 +82,13 @@ export const Logger = () => {
   const [hasPressedStart, setHasPressedStart] = useState<boolean>(false);
   const [base64Photo, setBase64Photo] = useState<string>('');
 
+  const [isLoading, setIsLoading] = useState<boolean>(false);
+  const [hasError, setHasError] = useState<boolean>(false);
+
+  const navigator = useNavigation<NavigationProp<RootStackParamList>>();
+
+  const { debounce } = useDebounce();
+
   const handleCameraPermission = useCallback(() => {
     if (!permission?.granted) {
       requestPermission();
@@ -98,24 +118,82 @@ export const Logger = () => {
 
   // api submission
 
-  const submitMeal = useCallback(() => {
-    // ...
+  const dismissErrorCallback = useCallback(() => {
+    setHasError(false);
   }, []);
 
-  const submitGroceries = useCallback(() => {
-    // ...
-  }, []);
+  const submitMeal = useCallback(async () => {
+    if (isLoading) {
+      return;
+    }
 
-  const submitNutrition = useCallback(() => {
-    // ...
-  }, []);
+    setIsLoading(true);
+    setHasError(false);
+    try {
+      const res = await discoverMeal(base64Photo);
+      setIsLoading(() => false);
+      navigator.navigate('Results', {
+        image: base64Photo,
+        result: res,
+        mode: 'MEAL',
+        title: route.params?.title,
+      });
+    } catch (error) {
+      setIsLoading(() => false);
+      setHasError(() => true);
+    }
+  }, [base64Photo, isLoading, navigator, route.params?.title]);
+
+  const submitGroceries = useCallback(async () => {
+    if (isLoading) {
+      return;
+    }
+
+    setIsLoading(true);
+    setHasError(false);
+    try {
+      const res = await discoverGroceries(base64Photo);
+      setIsLoading(() => false);
+      navigator.navigate('Results', {
+        image: base64Photo,
+        result: res,
+        mode: 'GROCERIES',
+        title: route.params?.title,
+      });
+    } catch (error) {
+      setIsLoading(() => false);
+      setHasError(() => true);
+    }
+  }, [base64Photo, isLoading, navigator, route.params?.title]);
+
+  const submitNutrition = useCallback(async () => {
+    if (isLoading) {
+      return;
+    }
+
+    setIsLoading(true);
+    setHasError(false);
+    try {
+      const res = await discoverNutrition(base64Photo);
+      setIsLoading(() => false);
+      navigator.navigate('Results', {
+        image: base64Photo,
+        result: res,
+        mode: 'NUTRITION',
+        title: route.params?.title,
+      });
+    } catch (error) {
+      setIsLoading(() => false);
+      setHasError(() => true);
+    }
+  }, [base64Photo, isLoading, navigator, route.params?.title]);
 
   let title = '';
   let animation: string | AnimationObject | { uri: string } = '';
   let startInstructions: string[] = [];
   let captureInstructions: string[] = [];
   let confirmInstructions: string[] = [];
-  let submitCallback: (() => void) | undefined = undefined;
+  let submitCallback: () => void = () => undefined;
   switch (mode) {
     case 'MEAL':
       title = 'Find out your calories intake...';
@@ -170,7 +248,10 @@ export const Logger = () => {
         'Ensure that the prints are clearly visible and not blurred.',
         'Keep a fair distance away to show the full list.',
       ];
-      confirmInstructions = ['Press "Confirm" if everything is good to go.'];
+      confirmInstructions = [
+        'Ensure photo is well lit and text are readable',
+        'Press "Confirm" if everything is good to go.',
+      ];
       submitCallback = submitNutrition;
       break;
     default:
@@ -180,37 +261,75 @@ export const Logger = () => {
   // post-capture confirmation
   if (base64Photo) {
     return (
-      <View style={styles.cameraContainer}>
-        <View style={styles.cameraFrame}>
-          <Image
-            width={512}
-            height={512}
-            src={'data:image/jpg;base64,' + base64Photo}
-            style={styles.camera}
-          />
+      <>
+        <View style={styles.cameraContainer}>
+          <View style={styles.cameraFrame}>
+            <Image
+              width={512}
+              height={512}
+              src={'data:image/jpg;base64,' + base64Photo}
+              style={styles.camera}
+            />
+          </View>
+          <View style={styles.cameraTips}>
+            {confirmInstructions.map((instr, index) => (
+              <RowText key={index} index={index + 1}>
+                {instr}
+              </RowText>
+            ))}
+          </View>
+          <View style={styles.cameraActions}>
+            <TouchableOpacity
+              style={styles.retakeButton}
+              onPress={retakeCallback}
+            >
+              <Text style={styles.buttonText}>Retake</Text>
+            </TouchableOpacity>
+            <TouchableOpacity
+              style={styles.actionButton}
+              onPress={submitCallback}
+            >
+              <Text style={styles.buttonText}>Confirm</Text>
+            </TouchableOpacity>
+          </View>
         </View>
-        <View style={styles.cameraTips}>
-          {confirmInstructions.map((instr, index) => (
-            <RowText key={index} index={index + 1}>
-              {instr}
-            </RowText>
-          ))}
-        </View>
-        <View style={styles.cameraActions}>
-          <TouchableOpacity
-            style={styles.retakeButton}
-            onPress={retakeCallback}
+        {!!isLoading && (
+          <BlurView
+            style={styles.loadingModal}
+            intensity={100}
+            tint="dark"
+            experimentalBlurMethod="dimezisBlurView"
           >
-            <Text style={styles.buttonText}>Retake</Text>
-          </TouchableOpacity>
-          <TouchableOpacity
-            style={styles.actionButton}
-            onPress={submitCallback}
+            <LottieView
+              source={require('../../../assets/lottie/misc/loading.json')}
+              style={styles.loader}
+              autoPlay
+              loop
+            />
+          </BlurView>
+        )}
+        {!isLoading && !!hasError && (
+          <BlurView
+            style={styles.errorModal}
+            intensity={100}
+            tint="dark"
+            experimentalBlurMethod="dimezisBlurView"
           >
-            <Text style={styles.buttonText}>Confirm</Text>
-          </TouchableOpacity>
-        </View>
-      </View>
+            <View style={styles.errorView}>
+              <Text style={styles.errorTitle}>Network Error</Text>
+              <Text style={styles.errorText}>
+                Sorry, we encountered a technical issue. Please try again.
+              </Text>
+              <TouchableOpacity
+                style={styles.actionButton}
+                onPress={dismissErrorCallback}
+              >
+                <Text style={styles.buttonText}>Try again</Text>
+              </TouchableOpacity>
+            </View>
+          </BlurView>
+        )}
+      </>
     );
   }
 
@@ -229,7 +348,10 @@ export const Logger = () => {
           ))}
         </View>
         <View style={styles.cameraActions}>
-          <TouchableOpacity style={styles.actionButton} onPress={capture}>
+          <TouchableOpacity
+            style={styles.actionButton}
+            onPress={() => debounce(capture)}
+          >
             <Text style={styles.buttonText}>Capture</Text>
           </TouchableOpacity>
         </View>
@@ -254,125 +376,5 @@ export const Logger = () => {
     </View>
   );
 };
-
-const styles = StyleSheet.create({
-  // ROW
-  rowContainer: {
-    flexDirection: 'row',
-  },
-  numbering: {
-    color: '#FFFFFF',
-    fontSize: 16,
-    fontFamily: 'Inter-SemiBold',
-    marginRight: 8,
-  },
-  rowText: {
-    color: '#FFFFFF',
-    fontSize: 16,
-    fontFamily: 'Inter-SemiBold',
-  },
-
-  // INSTRUCTIONS
-  instructionsContainer: {
-    display: 'flex',
-    flexGrow: 1,
-    width: '100%',
-    height: 'auto',
-    flexDirection: 'column',
-  },
-  lottie: {
-    width: '100%',
-    height: '36%',
-    marginVertical: 24,
-  },
-  textContainer: {
-    marginHorizontal: 36,
-  },
-  titleText: {
-    color: '#FFFFFF',
-    fontSize: 24,
-    fontFamily: 'Inter-SemiBold',
-    marginBottom: 24,
-  },
-  bodyTextContainer: {
-    gap: 16,
-    marginHorizontal: 8,
-  },
-
-  // INSTRUCTION LEVEL
-  container: {
-    display: 'flex',
-    flexGrow: 1,
-    flexDirection: 'column',
-    justifyContent: 'space-between',
-    alignItems: 'center',
-    backgroundColor: '#1F1F1F',
-  },
-
-  // CAMERA / POST-CAPTURE
-  cameraContainer: {
-    display: 'flex',
-    flexGrow: 1,
-    flexDirection: 'column',
-    justifyContent: 'flex-start',
-    alignItems: 'center',
-    backgroundColor: '#1F1F1F',
-  },
-  cameraFrame: {
-    display: 'flex',
-    height: 'auto',
-    aspectRatio: 1,
-    width: '85%',
-    margin: 24,
-    borderRadius: 24,
-    overflow: 'hidden',
-    borderWidth: 2,
-    borderColor: '#1C83E0',
-  },
-  camera: {
-    display: 'flex',
-    width: '100%',
-    height: '100%',
-    borderRadius: 24,
-    backgroundColor: '#1F1F1F',
-  },
-  cameraTips: {
-    display: 'flex',
-    gap: 16,
-    marginHorizontal: 48,
-  },
-  cameraActions: {
-    display: 'flex',
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center',
-    position: 'absolute',
-    bottom: 8,
-  },
-  retakeButton: {
-    display: 'flex',
-    flexShrink: 1,
-    width: '100%',
-    backgroundColor: '#E7451F',
-    margin: 0,
-    paddingHorizontal: 36,
-    paddingVertical: 16,
-  },
-  actionButton: {
-    display: 'flex',
-    backgroundColor: '#1C83E0',
-    margin: 0,
-    width: '100%',
-    flexShrink: 1,
-    paddingHorizontal: 36,
-    paddingVertical: 16,
-  },
-  buttonText: {
-    color: '#FFFFFF',
-    fontSize: 18,
-    fontFamily: 'Inter-SemiBold',
-    textAlign: 'center',
-  },
-});
 
 export default Logger;

@@ -8,4 +8,11 @@ export const shadows = StyleSheet.create({
     shadowRadius: 1.62,
     elevation: 2,
   },
+  tray: {
+    shadowColor: '#000000',
+    shadowOffset: { width: 0, height: -2 },
+    shadowOpacity: 0.5,
+    shadowRadius: 1.62,
+    elevation: 10,
+  },
 });

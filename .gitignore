@@ -31,6 +31,7 @@ yarn-error.*
 
 # Env files
 .env
+.env.local
 env-variables.yaml
 secrets
 

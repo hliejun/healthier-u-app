@@ -11,6 +11,7 @@ import { HomeTabs } from './src/screens/HomeTabs';
 import { Logger } from './src/screens/Logger';
 import { Missions } from './src/screens/Missions/Missions';
 import { Onboarding } from './src/screens/Onboarding';
+import { Results } from './src/screens/Results/Results';
 import { VirtualPetFull } from './src/screens/VirtualPetFull/VirtualPetFull';
 
 export type RootStackParamList = {
@@ -18,13 +19,16 @@ export type RootStackParamList = {
   Onboarding: Record<string, never>;
   VirtualPetFull: Record<string, never>;
   Missions: Record<string, never>;
-  Logger: Record<
-    string,
-    {
-      mode: 'MEAL' | 'GROCERIES' | 'NUTRITION';
-      title: 'Meal Log' | 'Groceries Log' | 'Nutrition Log';
-    }
-  >;
+  Logger: {
+    mode: 'MEAL' | 'GROCERIES' | 'NUTRITION';
+    title: 'Meal Log' | 'Groceries Log' | 'Nutrition Log';
+  };
+  Results: {
+    image: string;
+    result: Record<string, unknown>;
+    mode: 'MEAL' | 'GROCERIES' | 'NUTRITION';
+    title: 'Meal Log' | 'Groceries Log' | 'Nutrition Log';
+  };
 };
 
 const Stack = createStackNavigator<RootStackParamList>();
@@ -77,6 +81,24 @@ export const App = () => {
                   elevation: 0,
                 },
               })}
+            />
+            <Stack.Screen
+              name="Results"
+              component={Results}
+              options={{
+                presentation: 'modal',
+                headerBackTitle: ' ',
+                headerTitleStyle: {
+                  fontFamily: 'Inter-SemiBold',
+                },
+                headerTintColor: '#FFFFFF',
+                headerStyle: {
+                  shadowOpacity: 0,
+                  backgroundColor: '#1F1F1F',
+                  borderWidth: 0,
+                  elevation: 0,
+                },
+              }}
             />
           </Stack.Navigator>
         </NavigationContainer>
