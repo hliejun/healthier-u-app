@@ -1,5 +1,6 @@
 import { Ionicons } from '@expo/vector-icons';
 import { NavigationProp, useNavigation } from '@react-navigation/native';
+import LottieView from 'lottie-react-native';
 import React, { useCallback } from 'react';
 import {
   Image,
@@ -21,6 +22,19 @@ const VirtualPet = () => {
   return (
     <View style={styles.virtualPetSection}>
       <View style={styles.imageContainer}>
+        <TouchableWithoutFeedback
+          style={styles.imageSection}
+          onPress={navigateToFullScreen}
+        >
+          <View style={styles.lottieContainer}>
+            <LottieView
+              source={require('../../../assets/lottie/ottie/neutral.json')} // Update this to the correct path
+              autoPlay
+              loop
+              style={styles.lottiePet}
+            />
+          </View>
+        </TouchableWithoutFeedback>
         <TouchableWithoutFeedback
           style={styles.imageSection}
           onPress={navigateToFullScreen}
@@ -101,7 +115,7 @@ const VirtualPet = () => {
         <View style={styles.statBox}>
           <View style={styles.statGroup}>
             <Text style={styles.statText}>Sleep</Text>
-            <Text style={styles.statValue}>2.5 / 8 hours</Text>
+            <Text style={styles.statValue}>7 / 8 hours</Text>
           </View>
           <View style={styles.progressBarContainer}>
             <View style={styles.iconBoxSleep}>
@@ -110,7 +124,7 @@ const VirtualPet = () => {
             <View
               style={[
                 styles.progressBar,
-                { backgroundColor: '#4CAF50', width: '31.25%' },
+                { backgroundColor: '#4CAF50', width: '75%' },
               ]}
             />
           </View>
@@ -273,6 +287,17 @@ const styles = StyleSheet.create({
     marginRight: 4,
     backgroundColor: '#4CAF50',
     borderRadius: 16,
+  },
+  lottieContainer: {
+    flex: 1,
+    zIndex: 99,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  lottiePet: {
+    width: 200,
+    height: 150,
+    marginTop: 250,
   },
 });
 
