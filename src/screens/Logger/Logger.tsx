@@ -210,8 +210,8 @@ export const Logger = () => {
         'Keep a fair distance away to show the full portion.',
       ];
       confirmInstructions = [
-        'Press "Confirm" if everything is good to go.',
         'You can only earn points for up to 5 submissions a day!',
+        'Press "Confirm" if everything is good to go.',
       ];
       submitCallback = submitMeal;
       break;
@@ -230,8 +230,8 @@ export const Logger = () => {
         'Keep a fair distance away to show the full product.',
       ];
       confirmInstructions = [
+        'Once submitted, estimated calories will be tracked!',
         'Press "Confirm" if everything is good to go.',
-        'You can only earn points for up to 10 submissions a day!',
       ];
       submitCallback = submitGroceries;
       break;

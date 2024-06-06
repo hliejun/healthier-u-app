@@ -1,88 +1,113 @@
 import { Ionicons } from '@expo/vector-icons';
+import { formatRelative } from 'date-fns';
+import { StatusBar } from 'expo-status-bar';
 import LottieView from 'lottie-react-native';
-import React from 'react';
+import React, { useCallback, useContext, useMemo } from 'react';
 import { Image, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 
+import { StatBox } from '../../components/StatBox';
+import { StatsContext } from '../../contexts/StatsContext';
+import { shadows } from '../../styles/shadows';
+
+// TODO: add tap spiral or hearts to otty
+
 export const VirtualPetFull = () => {
+  const {
+    calories,
+    steps,
+    mvpa,
+    sleep,
+    timestamp,
+    updateCalories,
+    updateMvpa,
+    updateSteps,
+  } = useContext(StatsContext);
+
+  const updateMockStats = useCallback(() => {
+    updateCalories(300);
+    updateMvpa(10);
+    updateSteps(1000);
+  }, [updateCalories, updateMvpa, updateSteps]);
+
+  // 4 states so far: hungry, neutral, full, walk
+  const petState = useMemo(() => {
+    // full
+    if (calories >= 1800) {
+      return 'FULL';
+    }
+
+    // hungry
+    if (calories < 900) {
+      return 'HUNGRY';
+    }
+
+    // walk
+    if (steps >= 5000) {
+      return 'WALK';
+    }
+
+    return 'NEUTRAL';
+  }, [calories, steps]);
+
+  const lottiePet = useMemo(() => {
+    switch (petState) {
+      case 'FULL':
+        return require('../../../assets/lottie/ottie/full.json');
+      case 'HUNGRY':
+        return require('../../../assets/lottie/ottie/hungry.json');
+      case 'WALK':
+        return require('../../../assets/lottie/ottie/walk.json');
+      default:
+        return require('../../../assets/lottie/ottie/neutral.json');
+    }
+  }, [petState]);
+
   return (
     <>
+      <StatusBar />
       <View style={styles.statsContainer}>
-        <View style={styles.statBox}>
-          <View style={styles.statGroup}>
-            <Text style={styles.statText}>Calories</Text>
-            <Text style={styles.statValue}>500 / 1,800</Text>
-          </View>
-          <View style={styles.progressBarContainer}>
-            <View style={styles.iconBoxCalories}>
-              <Ionicons name={'restaurant-outline'} size={16} color={'white'} />
-            </View>
-            <View
-              style={[
-                styles.progressBar,
-                { backgroundColor: '#6C63FF', width: '27%' },
-              ]}
-            />
-          </View>
-        </View>
+        <StatBox
+          unit="cal"
+          value={calories}
+          goal={1800}
+          label="Calories"
+          iconName="restaurant-outline"
+          color="#6C63FF"
+        />
 
-        <View style={styles.statBox}>
-          <View style={styles.statGroup}>
-            <Text style={styles.statText}>Steps</Text>
-            <Text style={styles.statValue}>1,000 / 5,000</Text>
-          </View>
-          <View style={styles.progressBarContainer}>
-            <View style={styles.iconBoxSteps}>
-              <Ionicons name={'walk-outline'} size={16} color={'white'} />
-            </View>
-            <View
-              style={[
-                styles.progressBar,
-                { backgroundColor: '#1DA1F2', width: '20%' },
-              ]}
-            />
-          </View>
-        </View>
+        <StatBox
+          unit=""
+          value={steps}
+          goal={5000}
+          label="Steps"
+          iconName="walk-outline"
+          color="#1DA1F2"
+        />
 
-        <View style={styles.statBox}>
-          <View style={styles.statGroup}>
-            <Text style={styles.statText}>MVPA</Text>
-            <Text style={styles.statValue}>30 / 30 mins</Text>
-          </View>
-          <View style={styles.progressBarContainer}>
-            <View style={styles.iconBoxMVPA}>
-              <Ionicons name={'bicycle-outline'} size={16} color={'white'} />
-            </View>
-            <View
-              style={[
-                styles.progressBar,
-                { backgroundColor: '#FFD700', width: '40%' },
-              ]}
-            />
-          </View>
-        </View>
+        <StatBox
+          unit="mins"
+          value={mvpa}
+          goal={30}
+          label="MVPA"
+          iconName="bicycle-outline"
+          color="#FFD700"
+        />
 
-        <View style={styles.statBox}>
-          <View style={styles.statGroup}>
-            <Text style={styles.statText}>Sleep</Text>
-            <Text style={styles.statValue}>7 / 8 hours</Text>
-          </View>
-          <View style={styles.progressBarContainer}>
-            <View style={styles.iconBoxSleep}>
-              <Ionicons name={'moon-outline'} size={16} color={'white'} />
-            </View>
-            <View
-              style={[
-                styles.progressBar,
-                { backgroundColor: '#4CAF50', width: '75%' },
-              ]}
-            />
-          </View>
-        </View>
+        <StatBox
+          unit="hours"
+          value={sleep}
+          goal={8}
+          label="Sleep"
+          iconName="moon-outline"
+          color="#4CAF50"
+        />
       </View>
 
       <View style={styles.header}>
-        <Text style={styles.updateText}>Updated today, 11.30 AM </Text>
-        <TouchableOpacity style={styles.syncButton}>
+        <Text
+          style={styles.updateText}
+        >{`Updated ${formatRelative(timestamp, new Date())}`}</Text>
+        <TouchableOpacity style={styles.syncButton} onPress={updateMockStats}>
           <Text style={styles.syncText}>Sync now</Text>
         </TouchableOpacity>
       </View>
@@ -90,7 +115,7 @@ export const VirtualPetFull = () => {
       <View style={styles.lottieContainer}>
         <View style={styles.lottiePet}>
           <LottieView
-            source={require('../../../assets/lottie/ottie/hungry otty.json')}
+            source={lottiePet}
             style={styles.otterImage}
             autoPlay
             loop
@@ -148,11 +173,7 @@ const styles = StyleSheet.create({
     borderRadius: 4,
     maxWidth: '100%',
     alignItems: 'flex-start',
-    shadowColor: '#000',
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.23,
-    shadowRadius: 2.62,
-    elevation: 4,
+    ...shadows.card,
     borderTopRightRadius: 24,
     borderTopLeftRadius: 24,
     display: 'flex',
@@ -169,7 +190,6 @@ const styles = StyleSheet.create({
     flex: 1,
     width: '100%',
     height: 230,
-    top: -7,
     position: 'relative',
   },
   petImage: {
@@ -178,23 +198,6 @@ const styles = StyleSheet.create({
     borderTopRightRadius: 34,
     borderTopLeftRadius: 34,
   },
-  iconContainer: {
-    position: 'absolute',
-    left: 10,
-    top: '20%',
-    zIndex: 1,
-    display: 'flex',
-    flexDirection: 'column',
-    justifyContent: 'space-between',
-    height: '60%',
-  },
-  iconBox: {
-    backgroundColor: '#5b5b5b',
-    opacity: 20,
-    borderRadius: 4,
-    padding: 8,
-    marginBottom: 16,
-  },
   statsContainer: {
     width: '100%',
     display: 'flex',
@@ -202,84 +205,7 @@ const styles = StyleSheet.create({
     flexWrap: 'wrap',
     justifyContent: 'space-between',
     padding: 10,
-  },
-  statBox: {
-    width: '48%',
-    marginBottom: 16,
-    backgroundColor: '#FFFFFF',
-    padding: 16,
-    borderRadius: 8,
-    shadowColor: '#000',
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.23,
-    shadowRadius: 2.62,
-    elevation: 4,
-  },
-  statGroup: {
-    display: 'flex',
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-  },
-  statText: {
-    fontSize: 12,
-    fontFamily: 'Inter-Bold',
-    marginBottom: 4,
-    color: '#333333',
-  },
-  statValue: {
-    fontSize: 12,
-    fontFamily: 'Inter-SemiBold',
-    marginBottom: 4,
-    color: '#333333',
-  },
-  progressBarContainer: {
-    width: '100%',
-    height: 10,
-    marginTop: 10,
-    backgroundColor: '#E0E0E0',
-    borderRadius: 4,
-    flexDirection: 'row',
-    alignItems: 'center',
-  },
-  progressBar: {
-    height: '100%',
-    borderRadius: 4,
-  },
-  iconBoxCalories: {
-    width: 24,
-    height: 24,
-    justifyContent: 'center',
-    alignItems: 'center',
-    marginRight: 4,
-    backgroundColor: '#6C63FF',
-    borderRadius: 16,
-  },
-  iconBoxSteps: {
-    width: 24,
-    height: 24,
-    justifyContent: 'center',
-    alignItems: 'center',
-    marginRight: 4,
-    backgroundColor: '#1DA1F2',
-    borderRadius: 16,
-  },
-  iconBoxMVPA: {
-    width: 24,
-    height: 24,
-    justifyContent: 'center',
-    alignItems: 'center',
-    marginRight: 4,
-    backgroundColor: '#FFD700',
-    borderRadius: 16,
-  },
-  iconBoxSleep: {
-    width: 24,
-    height: 24,
-    justifyContent: 'center',
-    alignItems: 'center',
-    marginRight: 4,
-    backgroundColor: '#4CAF50',
-    borderRadius: 16,
+    gap: 8,
   },
   lottieContainer: {
     flex: 1,
@@ -289,21 +215,26 @@ const styles = StyleSheet.create({
     flex: 1,
   },
   otterContainer: {
+    padding: 8,
     alignItems: 'center',
+    display: 'flex',
+    flexDirection: 'row',
+    justifyContent: 'flex-end',
   },
   header: {
     flexDirection: 'row',
     justifyContent: 'flex-end',
     alignItems: 'center',
-    padding: 16,
-    top: -15,
+    padding: 8,
     backgroundColor: '#F8F8F8',
     borderBottomWidth: 1,
     borderBottomColor: '#E0E0E0',
   },
   updateText: {
+    fontFamily: 'Inter-SemiBold',
     fontSize: 12,
     color: '#333333',
+    marginRight: 8,
   },
   syncButton: {
     paddingVertical: 4,
@@ -312,14 +243,14 @@ const styles = StyleSheet.create({
     borderRadius: 4,
   },
   syncText: {
-    fontSize: 14,
+    fontFamily: 'Inter-SemiBold',
+    fontSize: 12,
     color: '#FFFFFF',
   },
   backgroundImage: {
     position: 'absolute',
     width: '100%',
     height: '100%',
-    top: -8,
   },
   otterImage: {
     width: '100%',
@@ -328,14 +259,15 @@ const styles = StyleSheet.create({
     marginTop: 70,
   },
   otterName: {
-    fontSize: 24,
+    fontFamily: 'Inter-SemiBold',
+    fontSize: 18,
     color: '#000',
-    top: -6,
+    flexGrow: 1,
+    display: 'flex',
+    textAlign: 'center',
+    marginLeft: 24,
   },
-  settingsIcon: {
-    position: 'absolute',
-    right: 16,
-  },
+  settingsIcon: {},
   menuContainer: {
     flexDirection: 'row',
     justifyContent: 'space-around',

@@ -6,7 +6,7 @@ import {
   useRoute,
 } from '@react-navigation/native';
 import { StatusBar } from 'expo-status-bar';
-import React, { useCallback, useMemo } from 'react';
+import React, { useCallback, useContext, useEffect, useMemo } from 'react';
 import {
   Image,
   Linking,
@@ -19,12 +19,14 @@ import {
 import { Row, Rows, Table } from 'react-native-reanimated-table';
 
 import { RootStackParamList } from '../../../App';
+import { StatsContext } from '../../contexts/StatsContext';
 import { shadows } from '../../styles/shadows';
 
 export const Results = () => {
   const route = useRoute<RouteProp<RootStackParamList>>();
-
   const navigator = useNavigation<NavigationProp<RootStackParamList>>();
+
+  const { updateCalories } = useContext(StatsContext);
 
   const { title, image, mode, result } = route?.params as {
     image: string;
@@ -46,6 +48,16 @@ export const Results = () => {
       'https://www.healthhub.sg/live-healthy/make_healthier_choice',
     );
   }, []);
+
+  useEffect(() => {
+    if (
+      result?.calories &&
+      typeof result?.calories === 'number' &&
+      result?.isLegitimate
+    ) {
+      updateCalories(result?.calories);
+    }
+  }, [result?.calories, result?.isLegitimate, updateCalories]);
 
   const nutrition = useMemo(() => {
     if (mode !== 'NUTRITION') {

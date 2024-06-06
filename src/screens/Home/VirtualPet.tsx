@@ -1,19 +1,56 @@
 import { Ionicons } from '@expo/vector-icons';
 import { NavigationProp, useNavigation } from '@react-navigation/native';
 import LottieView from 'lottie-react-native';
-import React, { useCallback } from 'react';
+import React, { useCallback, useContext, useMemo } from 'react';
 import {
   Image,
   StyleSheet,
-  Text,
   TouchableWithoutFeedback,
   View,
 } from 'react-native';
 
 import { RootStackParamList } from '../../../App';
+import { StatBox } from '../../components/StatBox';
+import { StatsContext } from '../../contexts/StatsContext';
+import { shadows } from '../../styles/shadows';
 
 const VirtualPet = () => {
   const navigator = useNavigation<NavigationProp<RootStackParamList>>();
+
+  const { calories, steps, mvpa, sleep } = useContext(StatsContext);
+
+  // 4 states so far: hungry, neutral, full, walk
+  const petState = useMemo(() => {
+    // full
+    if (calories >= 1800) {
+      return 'FULL';
+    }
+
+    // hungry
+    if (calories <= 900) {
+      return 'HUNGRY';
+    }
+
+    // walk
+    if (steps >= 5000) {
+      return 'WALK';
+    }
+
+    return 'NEUTRAL';
+  }, [calories, steps]);
+
+  const lottiePet = useMemo(() => {
+    switch (petState) {
+      case 'FULL':
+        return require('../../../assets/lottie/ottie/full.json');
+      case 'HUNGRY':
+        return require('../../../assets/lottie/ottie/hungry.json');
+      case 'WALK':
+        return require('../../../assets/lottie/ottie/walk.json');
+      default:
+        return require('../../../assets/lottie/ottie/neutral.json');
+    }
+  }, [petState]);
 
   const navigateToFullScreen = useCallback(() => {
     navigator.navigate('VirtualPetFull', {});
@@ -28,7 +65,7 @@ const VirtualPet = () => {
         >
           <View style={styles.lottieContainer}>
             <LottieView
-              source={require('../../../assets/lottie/ottie/neutral.json')} // Update this to the correct path
+              source={lottiePet}
               autoPlay
               loop
               style={styles.lottiePet}
@@ -58,77 +95,41 @@ const VirtualPet = () => {
       </View>
 
       <View style={styles.statsContainer}>
-        <View style={styles.statBox}>
-          <View style={styles.statGroup}>
-            <Text style={styles.statText}>Calories</Text>
-            <Text style={styles.statValue}>1,000 / 1,800</Text>
-          </View>
-          <View style={styles.progressBarContainer}>
-            <View style={styles.iconBoxCalories}>
-              <Ionicons name={'restaurant-outline'} size={16} color={'white'} />
-            </View>
-            <View
-              style={[
-                styles.progressBar,
-                { backgroundColor: '#6C63FF', width: '55.56%' },
-              ]}
-            />
-          </View>
-        </View>
+        <StatBox
+          unit="cal"
+          value={calories}
+          goal={1800}
+          label="Calories"
+          iconName="restaurant-outline"
+          color="#6C63FF"
+        />
 
-        <View style={styles.statBox}>
-          <View style={styles.statGroup}>
-            <Text style={styles.statText}>Steps</Text>
-            <Text style={styles.statValue}>1,000 / 5,000</Text>
-          </View>
-          <View style={styles.progressBarContainer}>
-            <View style={styles.iconBoxSteps}>
-              <Ionicons name={'walk-outline'} size={16} color={'white'} />
-            </View>
-            <View
-              style={[
-                styles.progressBar,
-                { backgroundColor: '#1DA1F2', width: '20%' },
-              ]}
-            />
-          </View>
-        </View>
+        <StatBox
+          unit=""
+          value={steps}
+          goal={5000}
+          label="Steps"
+          iconName="walk-outline"
+          color="#1DA1F2"
+        />
 
-        <View style={styles.statBox}>
-          <View style={styles.statGroup}>
-            <Text style={styles.statText}>MVPA</Text>
-            <Text style={styles.statValue}>30 / 30 mins</Text>
-          </View>
-          <View style={styles.progressBarContainer}>
-            <View style={styles.iconBoxMVPA}>
-              <Ionicons name={'bicycle-outline'} size={16} color={'white'} />
-            </View>
-            <View
-              style={[
-                styles.progressBar,
-                { backgroundColor: '#FFD700', width: '40%' },
-              ]}
-            />
-          </View>
-        </View>
+        <StatBox
+          unit="mins"
+          value={mvpa}
+          goal={30}
+          label="MVPA"
+          iconName="bicycle-outline"
+          color="#FFD700"
+        />
 
-        <View style={styles.statBox}>
-          <View style={styles.statGroup}>
-            <Text style={styles.statText}>Sleep</Text>
-            <Text style={styles.statValue}>7 / 8 hours</Text>
-          </View>
-          <View style={styles.progressBarContainer}>
-            <View style={styles.iconBoxSleep}>
-              <Ionicons name={'moon-outline'} size={16} color={'white'} />
-            </View>
-            <View
-              style={[
-                styles.progressBar,
-                { backgroundColor: '#4CAF50', width: '75%' },
-              ]}
-            />
-          </View>
-        </View>
+        <StatBox
+          unit="hours"
+          value={sleep}
+          goal={8}
+          label="Sleep"
+          iconName="moon-outline"
+          color="#4CAF50"
+        />
       </View>
     </View>
   );
@@ -155,11 +156,7 @@ const styles = StyleSheet.create({
     borderRadius: 4,
     maxWidth: '100%',
     alignItems: 'flex-start',
-    shadowColor: '#000',
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.23,
-    shadowRadius: 2.62,
-    elevation: 4,
+    ...shadows.card,
     borderTopRightRadius: 24,
     borderTopLeftRadius: 24,
     display: 'flex',
@@ -209,85 +206,9 @@ const styles = StyleSheet.create({
     flexWrap: 'wrap',
     justifyContent: 'space-between',
     padding: 10,
+    gap: 8,
   },
-  statBox: {
-    width: '48%',
-    marginBottom: 16,
-    backgroundColor: '#FFFFFF',
-    padding: 16,
-    borderRadius: 8,
-    shadowColor: '#000',
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.23,
-    shadowRadius: 2.62,
-    elevation: 4,
-  },
-  statGroup: {
-    display: 'flex',
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-  },
-  statText: {
-    fontSize: 12,
-    fontFamily: 'Inter-Bold',
-    marginBottom: 4,
-    color: '#333333',
-  },
-  statValue: {
-    fontSize: 12,
-    fontFamily: 'Inter-SemiBold',
-    marginBottom: 4,
-    color: '#333333',
-  },
-  progressBarContainer: {
-    width: '100%',
-    height: 10,
-    marginTop: 10,
-    backgroundColor: '#E0E0E0',
-    borderRadius: 4,
-    flexDirection: 'row',
-    alignItems: 'center',
-  },
-  progressBar: {
-    height: '100%',
-    borderRadius: 4,
-  },
-  iconBoxCalories: {
-    width: 24,
-    height: 24,
-    justifyContent: 'center',
-    alignItems: 'center',
-    marginRight: 4,
-    backgroundColor: '#6C63FF',
-    borderRadius: 16,
-  },
-  iconBoxSteps: {
-    width: 24,
-    height: 24,
-    justifyContent: 'center',
-    alignItems: 'center',
-    marginRight: 4,
-    backgroundColor: '#1DA1F2',
-    borderRadius: 16,
-  },
-  iconBoxMVPA: {
-    width: 24,
-    height: 24,
-    justifyContent: 'center',
-    alignItems: 'center',
-    marginRight: 4,
-    backgroundColor: '#FFD700',
-    borderRadius: 16,
-  },
-  iconBoxSleep: {
-    width: 24,
-    height: 24,
-    justifyContent: 'center',
-    alignItems: 'center',
-    marginRight: 4,
-    backgroundColor: '#4CAF50',
-    borderRadius: 16,
-  },
+
   lottieContainer: {
     flex: 1,
     zIndex: 99,

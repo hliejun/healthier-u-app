@@ -1,7 +1,9 @@
 import axios from 'axios';
 
-// const BASE_URL = process.env.EXPO_PUBLIC_BASE_URL;
-const BASE_URL = 'http://192.168.0.145:8000';
+import { ACCESS_TOKEN_KEY } from '../screens/Profile';
+import { storage } from './storage';
+
+const BASE_URL = process.env.EXPO_PUBLIC_BASE_URL;
 const DISCOVER_BASE_URL = `${BASE_URL}/app/discover`;
 const TOKEN = process.env.EXPO_PUBLIC_ACCESS_TOKEN;
 
@@ -11,10 +13,11 @@ export const discoverMeal = async (
   token = TOKEN,
 ) => {
   try {
+    const storedToken = storage.getString(ACCESS_TOKEN_KEY);
     const res = await axios.post(
       `${DISCOVER_BASE_URL}/meal`,
       {
-        token,
+        token: storedToken || token,
         mimeType,
         data: image,
       },
@@ -41,10 +44,11 @@ export const discoverGroceries = async (
   token = TOKEN,
 ) => {
   try {
+    const storedToken = storage.getString(ACCESS_TOKEN_KEY);
     const res = await axios.post(
       `${DISCOVER_BASE_URL}/groceries`,
       {
-        token,
+        token: storedToken || token,
         mimeType,
         data: image,
       },
@@ -71,10 +75,11 @@ export const discoverNutrition = async (
   token = TOKEN,
 ) => {
   try {
+    const storedToken = storage.getString(ACCESS_TOKEN_KEY);
     const res = await axios.post(
       `${DISCOVER_BASE_URL}/nutrition`,
       {
-        token,
+        token: storedToken || token,
         mimeType,
         data: image,
       },

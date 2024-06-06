@@ -22,15 +22,15 @@ export const Home = () => {
   const rewardsProfile = useContext(RewardsContext);
 
   const navigateToViewHealthpoints = useCallback(() => {
-    // TODO: implement
+    // ...
   }, []);
 
   const navigateToScanReceipt = useCallback(() => {
-    // TODO: implement
+    // TODO: implement scan receipt
   }, []);
 
   const navigateToViewRewards = useCallback(() => {
-    // TODO: implement
+    // ...
   }, []);
 
   return (
