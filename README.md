@@ -9,3 +9,4 @@
 - Lottie "Bento" [Animation by Cray Novick](https://lottiefiles.com/emojivid)
 - Lottie "Keto Diagram" [Animation by Robbe Nees](https://lottiefiles.com/robbenees)
 - Lottie "Loading" [Animation by A.Basit](https://lottiefiles.com/r4nvty2erk)
+- Lottie "Hearts" [Animation by Andrew Mckay](https://lottiefiles.com/andymckay)

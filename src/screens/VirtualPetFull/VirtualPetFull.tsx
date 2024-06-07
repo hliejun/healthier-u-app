@@ -2,8 +2,15 @@ import { Ionicons } from '@expo/vector-icons';
 import { formatRelative } from 'date-fns';
 import { StatusBar } from 'expo-status-bar';
 import LottieView from 'lottie-react-native';
-import React, { useCallback, useContext, useMemo } from 'react';
-import { Image, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
+import React, { useCallback, useContext, useMemo, useState } from 'react';
+import {
+  Image,
+  Pressable,
+  StyleSheet,
+  Text,
+  TouchableOpacity,
+  View,
+} from 'react-native';
 
 import { StatBox } from '../../components/StatBox';
 import { StatsContext } from '../../contexts/StatsContext';
@@ -22,6 +29,8 @@ export const VirtualPetFull = () => {
     updateMvpa,
     updateSteps,
   } = useContext(StatsContext);
+
+  const [showHearts, setShowHearts] = useState<boolean>(false);
 
   const updateMockStats = useCallback(() => {
     updateCalories(300);
@@ -61,6 +70,15 @@ export const VirtualPetFull = () => {
         return require('../../../assets/lottie/ottie/neutral.json');
     }
   }, [petState]);
+
+  const toggleOnHearts = useCallback(() => {
+    console.log('pressed');
+    setShowHearts(true);
+  }, []);
+
+  const toggleOffHearts = useCallback(() => {
+    setShowHearts(false);
+  }, []);
 
   return (
     <>
@@ -113,7 +131,18 @@ export const VirtualPetFull = () => {
       </View>
 
       <View style={styles.lottieContainer}>
-        <View style={styles.lottiePet}>
+        {!!showHearts && (
+          <View style={styles.heartsContainer}>
+            <LottieView
+              source={require('../../../assets/lottie/misc/hearts.json')}
+              style={styles.hearts}
+              autoPlay
+              onAnimationFinish={toggleOffHearts}
+              loop={false}
+            />
+          </View>
+        )}
+        <Pressable style={styles.lottiePet} onPress={toggleOnHearts}>
           <LottieView
             source={lottiePet}
             style={styles.otterImage}
@@ -124,7 +153,7 @@ export const VirtualPetFull = () => {
             source={require('../../../assets/images/livingroomfinal.png')}
             style={styles.backgroundImage}
           />
-        </View>
+        </Pressable>
 
         <View style={styles.otterContainer}>
           <Text style={styles.otterName}>Otty</Text>
@@ -210,6 +239,8 @@ const styles = StyleSheet.create({
   lottieContainer: {
     flex: 1,
     backgroundColor: '#FFFFFF',
+    position: 'relative',
+    overflow: 'hidden',
   },
   lottiePet: {
     flex: 1,
@@ -285,6 +316,19 @@ const styles = StyleSheet.create({
     fontSize: 14,
     color: '#333333',
     marginTop: 4,
+  },
+  heartsContainer: {
+    position: 'absolute',
+    bottom: 120,
+    left: 0,
+    right: 0,
+    zIndex: 99,
+    top: -30,
+  },
+  hearts: {
+    width: '100%',
+    height: '100%',
+    zIndex: 99,
   },
 });
 
