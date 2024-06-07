@@ -72,7 +72,6 @@ export const VirtualPetFull = () => {
   }, [petState]);
 
   const toggleOnHearts = useCallback(() => {
-    console.log('pressed');
     setShowHearts(true);
   }, []);
 
